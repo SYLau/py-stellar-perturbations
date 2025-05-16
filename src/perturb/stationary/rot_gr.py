@@ -43,6 +43,8 @@ class bvp_rot:
         dydr[0] = dw
         dydr[1] = np.pi*16*(rho+p)*elam*w - (4./r - np.pi*4*r*(rho+p)*elam )*dw
         '''Hartle 1967 Eqs. (125) & (126)'''
+        '''The first two solves for the particular solutions, 
+            the other two are for the homogeneous solutions'''
         dydr[2] = -4./r**2*elam/dnu*u2_p + (-dnu + elam/dnu*(np.pi*8*(rho+p)-4*m/r**3))*h2_p \
                 + r**3/6*(r*dnu/2-elam/r/dnu)*jj*dw**2 - r**2/3*(r*dnu/2+ elam/r/dnu)*jjp*w**2
         dydr[3] = -dnu*h2_p +(1./r+dnu/2)*(-r**3/3*jjp*w**2+jj/3*r**4*dw**2)

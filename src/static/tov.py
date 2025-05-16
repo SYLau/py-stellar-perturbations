@@ -13,19 +13,19 @@ from src.util.constants import G, c
 
 class solve_tov:
     def __init__(self,eos, eos_ga_p=None, sigma=None):
-            self.eos = eos
-            self.eos_ga_p = eos_ga_p
-            self.sigma = sigma
-            self.r = np.array([])
-            self.ysol = np.array([])
-            self.p = np.array([])
-            self.m = np.array([])
-            self.nu = np.array([])
-            self.rho = np.array([])
-            self.ga = np.array([])
+        self.eos = eos
+        self.eos_ga_p = eos_ga_p
+        self.sigma = sigma
+        self.r = np.array([])
+        self.ysol = np.array([])
+        self.p = np.array([])
+        self.m = np.array([])
+        self.nu = np.array([])
+        self.rho = np.array([])
+        self.ga = np.array([])
 
-            self.atol = 0.
-            self.rtol = 1.e-12
+        self.atol = 0.
+        self.rtol = 1.e-12
 
     def deriv(self,r,y):
         if self.eos == None:
@@ -174,15 +174,15 @@ class solve_tov:
 '''Old: Without anisotropy'''
 # class solve_tov:
 #     def __init__(self,eos, eos_ga_p=None):
-#             self.eos = eos
-#             self.eos_ga_p = eos_ga_p
-#             self.r = np.array([])
-#             self.ysol = np.array([])
-#             self.p = np.array([])
-#             self.m = np.array([])
-#             self.nu = np.array([])
-#             self.rho = np.array([])
-#             self.ga = np.array([])
+        # self.eos = eos
+        # self.eos_ga_p = eos_ga_p
+        # self.r = np.array([])
+        # self.ysol = np.array([])
+        # self.p = np.array([])
+        # self.m = np.array([])
+        # self.nu = np.array([])
+        # self.rho = np.array([])
+        # self.ga = np.array([])
 
 #             self.atol = 0.
 #             self.rtol = 1.e-12
