@@ -12,7 +12,7 @@ from src.util.constants import G, c
 import matplotlib.pyplot as plt
 # import scienceplots
 
-from src.perturb.pulsation.gr_aniso.bvp import bvp_LD_aniso
+from src.perturb.pulsation.gr_aniso.ivp import ivp_LD_aniso
 from src.perturb.pulsation.gr_aniso.ode import ode_LD_aniso
 
 class evp_LD_aniso:
@@ -46,12 +46,12 @@ class evp_LD_aniso:
         fguess = np.array([f0, f0-fw, f0+fw])
         wmode = self._rtmuller(self._get_Ain,fguess)
         if wmode != None:
-            bvp = bvp_LD_aniso(self.ell,wmode,self.bsol)
-            bvp.ode_method = self.ode_method
-            bvp.atol_factor, bvp.rtol = self.atol_factor, self.rtol
-            bvp.z_atol_factor, bvp.z_rtol = self.z_atol_factor, self.z_rtol
-            _, _ = bvp.solve_all(save_data=True)
-            self._get_eigenfunctions(wmode, bvp.rsol, bvp.ysol, bvp.rsol_ext, bvp.zsol)
+            ivp = ivp_LD_aniso(self.ell,wmode,self.bsol)
+            ivp.ode_method = self.ode_method
+            ivp.atol_factor, ivp.rtol = self.atol_factor, self.rtol
+            ivp.z_atol_factor, ivp.z_rtol = self.z_atol_factor, self.z_rtol
+            _, _ = ivp.solve_all(save_data=True)
+            self._get_eigenfunctions(wmode, ivp.rsol, ivp.ysol, ivp.rsol_ext, ivp.zsol)
             return wmode
         else:
             return None
@@ -72,11 +72,11 @@ class evp_LD_aniso:
         plt.close()
 
     def _get_Ain(self,f):
-        bvp = bvp_LD_aniso(self.ell,2*np.pi*f,self.bsol)
-        bvp.ode_method = self.ode_method
-        bvp.atol_factor, bvp.rtol = self.atol_factor, self.rtol
-        bvp.z_atol_factor, bvp.z_rtol = self.z_atol_factor, self.z_rtol
-        _ , Ain = bvp.solve_all()
+        ivp = ivp_LD_aniso(self.ell,2*np.pi*f,self.bsol)
+        ivp.ode_method = self.ode_method
+        ivp.atol_factor, ivp.rtol = self.atol_factor, self.rtol
+        ivp.z_atol_factor, ivp.z_rtol = self.z_atol_factor, self.z_rtol
+        _ , Ain = ivp.solve_all()
         return Ain
     
     def _get_eigenfunctions(self,w,r,y,rext,zext):

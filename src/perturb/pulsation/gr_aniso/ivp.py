@@ -14,7 +14,7 @@ from src.util.constants import G, c
 from src.perturb.pulsation.gr_aniso.ode import ode_LD_aniso
 from src.perturb.pulsation.Zerilli import ode_Zerilli
 
-class bvp_LD_aniso:
+class ivp_LD_aniso:
     def __init__(self,ell,w,bsol):
         self.ell = ell
         self.w = w
