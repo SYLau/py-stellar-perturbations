@@ -14,7 +14,7 @@ from src.util.constants import G, c
 class bvp_love:
     def __init__(self,bsol):
         self.bsol = bsol
-        self.atol_factor = 1.e-6
+        self.atol_factor = 1.e-8
         self.rtol = 1.e-8
         self.ode_method = 'RK45'
 

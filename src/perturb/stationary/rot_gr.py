@@ -114,7 +114,7 @@ class bvp_rot:
         '''Moment of inertia: Eq. (47) of Hartle 1967'''
         moi= r**4/(6*w/dw+2*r)
 
-        '''Quadrupole moment: Hartle 1967 Eqs. (139) & (140)'''
+        '''Quadrupole moment: Hartle 1967 Eqs. (139), (140) & (145)'''
         '''JJ is the spin^2 defined in Eq. (47) of Hartle.
             We take a derivative in r so we don't have to solve for Omega_s.
         '''
