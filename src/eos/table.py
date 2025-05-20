@@ -7,6 +7,7 @@ if __name__ == '__main__':
 
 #=========================================================
 '''Main content of the module'''
+import sys
 import numpy as np
 from src.util.constants import c
 
@@ -21,11 +22,14 @@ class eos_table:
         rho_sorted = np.all(self.rho_list[:-1] <= self.rho_list[1:])
         p_sorted = np.all(self.p_list[:-1] <= self.p_list[1:])
         if not (rho_sorted):
-            exit('eos_table: rho_list not sorted in ascending order')
+            print('eos_table: rho_list not sorted in ascending order')
+            sys.exit(1)
         if not (p_sorted):
-            exit('eos_table: p_list not sorted in ascending order')
+            print('eos_table: p_list not sorted in ascending order')
+            sys.exit(1)
         if len(self.rho_list) != len(self.p_list):
-            exit('eos_table: rho_list, p_list not of the same length')
+            print('eos_table: rho_list, p_list not of the same length')
+            sys.exit(1)
 
     def rho(self, p):
         rho_list = self.rho_list
