@@ -19,7 +19,7 @@ class bvp_rot:
         self.ode_method = 'RK45'
 
     '''Define ODE'''
-    '''w is -bar{omega} in Hartle 1967'''
+    '''w is -bar{omega}, u2 is nu_2 in Hartle 1967'''
     def deriv(self,r,y):
         w=y[0]
         dw=y[1]
