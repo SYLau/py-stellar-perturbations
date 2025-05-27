@@ -25,8 +25,6 @@ class solve_tov:
             self.rtol = 1.e-12
 
     def deriv(self,r,y):
-        if self.eos == None:
-            exit('solve_tov: self.eos_rho not provided')
         p=y[0]
         m=y[1]
         nu=y[2]

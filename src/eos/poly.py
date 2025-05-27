@@ -8,6 +8,7 @@ if __name__ == '__main__':
 #=========================================================
 '''Main content of the module'''
 import numpy as np
+from src.util.constants import c
 
 class eos_poly:
     def __init__(self,k,n):
@@ -26,7 +27,7 @@ class eos_poly:
     
     def ga(self, p):
         n = self.n
-        return (n+1.)/n
+        return (n+1.)/n*(1+p/self.rho(p)/c**2)
     
 #=========================================================
 '''Example run of this module'''
