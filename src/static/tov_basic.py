@@ -64,7 +64,7 @@ class solve_tov:
         self.r = isol.t
         self.ysol = isol.y
 
-        self.get_sol()
+        self._get_sol()
 
     def find_yr(self,r):
         idx = (np.abs(self.r - r)).argmin()
@@ -75,7 +75,7 @@ class solve_tov:
         self.rhof = self.eos.rho(self.pf)
         self.gaf = self.eos.ga(self.pf)
 
-    def get_sol(self):
+    def _get_sol(self):
         self.p = self.ysol[0,:]
         self.m = self.ysol[1,:]
         self.nu = self.ysol[2,:]

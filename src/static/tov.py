@@ -35,7 +35,7 @@ class solve_tov:
         if self.sigma == None:
             s = 0.
         else:
-            s = self.get_s(r,p,m,nu)
+            s = self._get_s(r,p,m,nu)
         
         dydr=0.0*y
         dydr[0]= -G*(rho+p/c**2)*(m+4*np.pi*r**3*p/c**2)/r**2/(1-2*G*m/r/c**2) - 2*s/r
@@ -72,7 +72,7 @@ class solve_tov:
         self.r = isol.t
         self.ysol = isol.y
 
-        self.get_sol()
+        self._get_sol()
 
     def find_yr(self,r):
         idx = (np.abs(self.r - r)).argmin()
@@ -87,20 +87,20 @@ class solve_tov:
             self.schf = 0.
         else:
             self.gaf = self.eos_ga_p(self.pf)
-            self.schf = self.get_sch(r,self.pf,self.mf,self.nuf)
+            self.schf = self._get_sch(r,self.pf,self.mf,self.nuf)
 
         if self.sigma == None:
             self.sf, self.dsdpf, self.dsdrhof, self.dsdmuf, self.dsdrf \
             = 0.0, 0.0, 0.0, 0.0, 0.0
         else:
-            self.sf = self.get_s(r,self.pf,self.mf,self.nuf)
-            self.dsdpf = self.get_dsdp(r,self.pf,self.mf,self.nuf)
-            self.dsdrhof = self.get_dsdrho(r,self.pf,self.mf,self.nuf)
-            self.dsdmuf = self.get_dsdmu(r,self.pf,self.mf,self.nuf)
-            self.dsdrf = self.get_dsdr(r,self.pf,self.mf,self.nuf)
-            self.s2f = self.get_s2(r,self.pf,self.mf,self.nuf)
+            self.sf = self._get_s(r,self.pf,self.mf,self.nuf)
+            self.dsdpf = self._get_dsdp(r,self.pf,self.mf,self.nuf)
+            self.dsdrhof = self._get_dsdrho(r,self.pf,self.mf,self.nuf)
+            self.dsdmuf = self._get_dsdmu(r,self.pf,self.mf,self.nuf)
+            self.dsdrf = self._get_dsdr(r,self.pf,self.mf,self.nuf)
+            self.s2f = self._get_s2(r,self.pf,self.mf,self.nuf)
 
-    def get_sol(self):
+    def _get_sol(self):
         self.p = self.ysol[0,:]
         self.m = self.ysol[1,:]
         self.nu = self.ysol[2,:]
@@ -117,14 +117,14 @@ class solve_tov:
             self.sch = 0.0*self.r
         else:
             self.ga = np.array(list(map(self.eos_ga_p, self.p)))
-            self.sch = np.array(list(map(self.get_sch, self.r, self.p, self.m, self.nu)))
+            self.sch = np.array(list(map(self._get_sch, self.r, self.p, self.m, self.nu)))
         
         if self.sigma == None:
             self.s = 0.0*self.r
         else:
-            self.s = np.array(list(map(self.get_s, self.r, self.p, self.m, self.nu)))
+            self.s = np.array(list(map(self._get_s, self.r, self.p, self.m, self.nu)))
         
-    def get_sch(self,r,p,m,nu):
+    def _get_sch(self,r,p,m,nu):
         ga0 = self.eos.ga(p)
         if self.eos_ga_p == None:
             return 0.0
@@ -133,40 +133,40 @@ class solve_tov:
             dpdr, _ , _ = self.deriv(r,np.array([p,m,nu]))
             return (1./ga0-1./ga)/p*dpdr
     
-    def get_s(self,r,p,m,nu):
+    def _get_s(self,r,p,m,nu):
         ga0 = self.eos.ga(p)
         rho = self.eos.rho(p)
-        sch = self.get_sch(r,p,m,nu)
+        sch = self._get_sch(r,p,m,nu)
         return self.sigma.s(r,p,m,rho,ga0,sch)
     
-    def get_dsdp(self,r,p,m,nu):
+    def _get_dsdp(self,r,p,m,nu):
         ga0 = self.eos.ga(p)
         rho = self.eos.rho(p)
-        sch = self.get_sch(r,p,m,nu)
+        sch = self._get_sch(r,p,m,nu)
         return self.sigma.dsdp(r,p,m,rho,ga0,sch)
     
-    def get_dsdrho(self,r,p,m,nu):
+    def _get_dsdrho(self,r,p,m,nu):
         ga0 = self.eos.ga(p)
         rho = self.eos.rho(p)
-        sch = self.get_sch(r,p,m,nu)
+        sch = self._get_sch(r,p,m,nu)
         return self.sigma.dsdrho(r,p,m,rho,ga0,sch)
     
-    def get_dsdmu(self,r,p,m,nu):
+    def _get_dsdmu(self,r,p,m,nu):
         ga0 = self.eos.ga(p)
         rho = self.eos.rho(p)
-        sch = self.get_sch(r,p,m,nu)
+        sch = self._get_sch(r,p,m,nu)
         return self.sigma.dsdmu(r,p,m,rho,ga0,sch)
     
-    def get_dsdr(self,r,p,m,nu):
+    def _get_dsdr(self,r,p,m,nu):
         ga0 = self.eos.ga(p)
         rho = self.eos.rho(p)
-        sch = self.get_sch(r,p,m,nu)
+        sch = self._get_sch(r,p,m,nu)
         return self.sigma.dsdr(r,p,m,rho,ga0,sch)
     
-    def get_s2(self,r,p,m,nu):
+    def _get_s2(self,r,p,m,nu):
         ga0 = self.eos.ga(p)
         rho = self.eos.rho(p)
-        sch = self.get_sch(r,p,m,nu)
+        sch = self._get_sch(r,p,m,nu)
         return self.sigma.s2(r,p,m,rho,ga0,sch)
     
 '''Old: Without anisotropy'''
@@ -220,7 +220,7 @@ class solve_tov:
 #         self.r = isol.t
 #         self.ysol = isol.y
 
-#         self.get_sol()
+#         self._get_sol()
 
 #     def find_yr(self,r):
 #         idx = (np.abs(self.r - r)).argmin()
@@ -235,9 +235,9 @@ class solve_tov:
 #             self.schf = 0.
 #         else:
 #             self.gaf = self.eos_ga_p(self.pf)
-#             self.schf = self.get_sch(r,self.pf,self.mf,self.nuf)
+#             self.schf = self._get_sch(r,self.pf,self.mf,self.nuf)
 
-#     def get_sol(self):
+#     def _get_sol(self):
 #         self.p = self.ysol[0,:]
 #         self.m = self.ysol[1,:]
 #         self.nu = self.ysol[2,:]
@@ -252,9 +252,9 @@ class solve_tov:
 #             self.sch = 0.0*self.r
 #         else:
 #             self.ga = np.array(list(map(self.eos_ga_p, self.p)))
-#             self.sch = np.array(list(map(self.get_sch, self.r, self.p, self.m, self.nu)))
+#             self.sch = np.array(list(map(self._get_sch, self.r, self.p, self.m, self.nu)))
         
-#     def get_sch(self,r,p,m,nu):
+#     def _get_sch(self,r,p,m,nu):
 #         ga0 = self.eos.ga(p)
 #         if self.eos_ga_p == None:
 #             return 0.0

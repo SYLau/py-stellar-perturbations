@@ -7,7 +7,6 @@ if __name__ == '__main__':
 
 #=========================================================
 '''Main content of the module'''
-import sys
 import numpy as np
 from src.util.constants import c, MeV, hbar
 
@@ -37,8 +36,7 @@ class eos_mmit:
     def p(self, rho):
         a4, a2, B= self.a4, self.a2, self.B
         if rho < self.rho_min:
-            print('err: eos_mmit eos_p p < 0')
-            sys.exit(1)
+            raise ValueError('eos_mmit eos_p p < 0. Use a larger rho.')
 
         rho_MeV4= rho*self.unitconv*c**2
         p_MeV4= (rho_MeV4-4*B)/3 \
