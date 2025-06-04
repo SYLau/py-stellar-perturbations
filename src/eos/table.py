@@ -7,7 +7,6 @@ if __name__ == '__main__':
 
 #=========================================================
 '''Main content of the module'''
-import sys
 import numpy as np
 from src.util.constants import c
 
@@ -22,14 +21,11 @@ class eos_table:
         rho_sorted = np.all(self.rho_list[:-1] <= self.rho_list[1:])
         p_sorted = np.all(self.p_list[:-1] <= self.p_list[1:])
         if not (rho_sorted):
-            print('eos_table: rho_list not sorted in ascending order')
-            sys.exit(1)
+            raise ValueError('eos_table: rho_list not sorted in ascending order')
         if not (p_sorted):
-            print('eos_table: p_list not sorted in ascending order')
-            sys.exit(1)
+            raise ValueError('eos_table: p_list not sorted in ascending order')
         if len(self.rho_list) != len(self.p_list):
-            print('eos_table: rho_list, p_list not of the same length')
-            sys.exit(1)
+            raise ValueError('eos_table: rho_list, p_list not of the same length')
 
     def rho(self, p):
         rho_list = self.rho_list
@@ -46,8 +42,12 @@ class eos_table:
     def ga(self, p):
         rho_list = self.rho_list
         p_list = self.p_list
-        i = np.searchsorted(p_list, p, side='left')
-        dlnp_dlnrho = (np.log(p_list[i+1])-np.log(p_list[i]))/(np.log(rho_list[i+1])-np.log(rho_list[i]))
+        if (p-p_list[0])*(p-p_list[-1]) > 0.:
+            raise ValueError('eos_table: p outside p_list range')
+        
+        i = np.searchsorted(p_list, p, side='right')
+
+        dlnp_dlnrho = (np.log(p_list[i])-np.log(p_list[i-1]))/(np.log(rho_list[i])-np.log(rho_list[i-1]))
         return (1+p/c**2/self.rho(p))*dlnp_dlnrho
 
 #=========================================================

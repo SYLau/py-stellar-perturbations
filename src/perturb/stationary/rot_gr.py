@@ -35,7 +35,7 @@ class bvp_rot:
         elam = 1./(1-2*m/r)
         enu = np.exp(nu)
         dnu = 2*(m+4*np.pi*r**3*p)/r**2*elam
-        jj = 1./np.sqrt(elam*enu)
+        jj = 1./(elam*enu)
         jjp=-jj*np.pi*8*r*(rho+p)*elam
 
         dydr = np.empty_like(y)
@@ -47,9 +47,10 @@ class bvp_rot:
             the other two are for the homogeneous solutions'''
         dydr[2] = -4./r**2*elam/dnu*u2_p + (-dnu + elam/dnu*(np.pi*8*(rho+p)-4*m/r**3))*h2_p \
                 + r**3/6*(r*dnu/2-elam/r/dnu)*jj*dw**2 - r**2/3*(r*dnu/2+ elam/r/dnu)*jjp*w**2
-        dydr[3] = -dnu*h2_p +(1./r+dnu/2)*(-r**3/3*jjp*w**2+jj/3*r**4*dw**2)
+        dydr[3] = -dnu*h2_p +(1./r+dnu/2)*(-r**3/3*jjp*w**2+jj/6*r**4*dw**2)
         dydr[4] = -4./r**2*elam/dnu*u2_h + (-dnu + elam/dnu*(np.pi*8*(rho+p)-4*m/r**3))*h2_h
         dydr[5] = -dnu*h2_h
+
         return dydr
 
     '''Regular condition at stellar center'''
