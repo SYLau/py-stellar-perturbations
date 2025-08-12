@@ -54,7 +54,7 @@ class bvp_rot:
         return dydr
 
     '''Regular condition at stellar center'''
-    def r0_reg(self,r):
+    def _regBC(self,r):
         bsol = self.bsol
 
         bsol.find_yr(r)
@@ -63,7 +63,7 @@ class bvp_rot:
 
         y0 = np.zeros(6)
         y0[0]= 1. + 8./5*np.pi*(rho+p)*r**2
-        y0[1]= 16./5*np.pi*(rho+p)*r**2
+        y0[1]= 16./5*np.pi*(rho+p)*r
         y0[2]= r**2
         y0[3]= (-np.pi*2*(rho/3+p) -np.pi*4/3*(rho+p)/np.exp(nu)*y0[0]**2)*r**4
         y0[4]= r**2
@@ -79,7 +79,7 @@ class bvp_rot:
         rf = bsol.r[-1]
         first_step = np.abs(rf-r0)/400
 
-        y0 = self.r0_reg(r0)
+        y0 = self._regBC(r0)
         
         yscale = y0*0.
         yscale[0] = 1.
