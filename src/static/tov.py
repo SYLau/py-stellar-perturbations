@@ -197,11 +197,15 @@ class solve_tov_aniso:
 
     def find_yr(self,r):
         idx = (np.abs(self.r - r)).argmin()
-        isol = solve_ivp(self.deriv, t_span=[self.r[idx],r], y0 = np.array([self.p[idx], self.m[idx], self.nu[idx]]) \
-                        , atol = self.atol, rtol = self.rtol)
 
-        self.pf, self.mf, self.nuf = isol.y[0,-1], isol.y[1,-1], isol.y[2,-1]
+        self.pf, self.mf, self.nuf = self._rk4(self.deriv, y = np.array([self.p[idx], self.m[idx], self.nu[idx]]), t = self.r[idx], dt = r - self.r[idx])
         self.rhof = self.eos.rho(self.pf)
+
+        '''Old: Using adaptive ODE solver to integrate one step. ~ 10 times slower'''
+        # isol = solve_ivp(self.deriv, t_span=[self.r[idx],r], y0 = np.array([self.p[idx], self.m[idx], self.nu[idx]]) \
+        #                 , atol = self.atol, rtol = self.rtol)
+        # self.pf, self.mf, self.nuf = isol.y[0,-1], isol.y[1,-1], isol.y[2,-1]
+        # self.rhof = self.eos.rho(self.pf)
 
         if self.eos_ga_p == None:
             self.gaf = self.eos.ga(self.pf)
@@ -287,6 +291,19 @@ class solve_tov_aniso:
         rho = self.eos.rho(p)
         sch = self._get_sch(r,p,m,nu)
         return self.sigma.s2(r,p,m,rho,ga0,sch)
+    
+    def _rk4(self, f, y, t, dt):
+        """
+        Takes a single explicit RK4 step for a system of ODEs.
+        """
+        k1 = f(t, y)
+        k2 = f(t + 0.5 * dt, y + 0.5 * dt * k1)
+        k3 = f(t + 0.5 * dt, y + 0.5 * dt * k2)
+        k4 = f(t + dt, y + dt * k3)
+        
+        # Update the state vector
+        y_next = y + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
+        return y_next
 
 
 
