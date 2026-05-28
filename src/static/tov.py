@@ -8,6 +8,7 @@ if __name__ == '__main__':
 #=========================================================
 '''Main content of the module'''
 import numpy as np
+# from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
 from src.util.constants import G, c
 
@@ -65,11 +66,14 @@ class solve_tov:
 
     def find_yr(self,r):
         idx = (np.abs(self.r - r)).argmin()
-        isol = solve_ivp(self.deriv, t_span=[self.r[idx],r], y0 = np.array([self.p[idx], self.m[idx], self.nu[idx]]) \
-                        , atol = self.atol, rtol = self.rtol)
-
-        self.pf, self.mf, self.nuf = isol.y[0,-1], isol.y[1,-1], isol.y[2,-1]
+        self.pf, self.mf, self.nuf = self._rk4(self.deriv, y = np.array([self.p[idx], self.m[idx], self.nu[idx]]), t = self.r[idx], dt = r - self.r[idx])
         self.rhof = self.eos.rho(self.pf)
+
+        '''Old: Using adaptive ODE solver to integrate one step. ~ 10 times slower'''
+        # isol = solve_ivp(self.deriv, t_span=[self.r[idx],r], y0 = np.array([self.p[idx], self.m[idx], self.nu[idx]]) \
+        #                 , atol = self.atol, rtol = self.rtol)
+        # self.pf, self.mf, self.nuf = isol.y[0,-1], isol.y[1,-1], isol.y[2,-1]
+        # self.rhof = self.eos.rho(self.pf)
 
         if self.eos_ga_p == None:
             self.gaf = self.eos.ga(self.pf)
@@ -77,6 +81,22 @@ class solve_tov:
         else:
             self.gaf = self.eos_ga_p(self.pf)
             self.schf = self._get_sch(r,self.pf,self.mf,self.nuf)
+
+    '''Using interpolation instead: Modified by Kumar'''
+    # def find_yr(self, r):
+    #     if r < self.r[0] or r > self.r[-1]:
+    #         self.pf = self.mf = self.nuf = self.rhof = self.gaf = self.schf = 0.0
+    #         return
+    #     self.pf = interp1d(self.r, self.p, kind='cubic', bounds_error=False, fill_value=0.0)(r)
+    #     self.mf = interp1d(self.r, self.m, kind='cubic', bounds_error=False, fill_value=0.0)(r)
+    #     self.nuf = interp1d(self.r, self.nu, kind='cubic', bounds_error=False, fill_value=0.0)(r)
+    #     self.rhof = interp1d(self.r, self.rho, kind='cubic', bounds_error=False, fill_value=0.0)(r)
+    #     if self.eos_ga_p == None:
+    #             self.gaf = self.eos.ga(self.pf)
+    #             self.schf = 0.
+    #         else:
+    #             self.gaf = self.eos_ga_p(self.pf)
+    #             self.schf = self._get_sch(r,self.pf,self.mf,self.nuf)
 
     def _get_sol(self):
         self.p = self.ysol[0,:]
@@ -103,6 +123,19 @@ class solve_tov:
             ga = self.eos_ga_p(p)
             dpdr, _ , _ = self.deriv(r,np.array([p,m,nu]))
             return (1./ga0-1./ga)/p*dpdr
+        
+    def _rk4(self, f, y, t, dt):
+        """
+        Takes a single explicit RK4 step for a system of ODEs.
+        """
+        k1 = f(t, y)
+        k2 = f(t + 0.5 * dt, y + 0.5 * dt * k1)
+        k3 = f(t + 0.5 * dt, y + 0.5 * dt * k2)
+        k4 = f(t + dt, y + dt * k3)
+        
+        # Update the state vector
+        y_next = y + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
+        return y_next
 
 class solve_tov_aniso:
     def __init__(self,eos, eos_ga_p=None, sigma=None):

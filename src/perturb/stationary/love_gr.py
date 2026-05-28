@@ -29,7 +29,7 @@ class bvp_love:
         cs2 = ga*p/(rho+p)
         dnu = 2*(m+4*np.pi*r**3*p)/r**2*elam
         Q = np.pi*4*elam*(5.*rho+9.*p+(rho+p)/cs2)-ell*(ell+1)*elam/r**2-dnu**2
-        '''Eq. (4.7) of Chan 2015'''
+        '''Eq. (4.7) of Chan 2015: Recasting the 2nd order ODE into Riccati equation'''
         dydr = np.empty_like(y)
         dydr[0]=-(y[0]**2+y[0]*elam*(1 + np.pi*4*r**2*(p-rho))+r**2*Q)/r
 
