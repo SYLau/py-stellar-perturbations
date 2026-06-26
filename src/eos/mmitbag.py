@@ -88,7 +88,7 @@ class eos_ccsc(eos_mmit):
         p_MeV4= p*self.unitconv
         muq2= a2/a4/2+np.sqrt(a2**2+4.*a4*(B+p_MeV4)/fa)/2/a4
         '''dp/d(mu_q^2) and dmu/d(mu_q^2)'''
-        dp_MeV4= 2.*fa*muq2-fa*a2
+        dp_MeV4= 2.*fa*a4*muq2-fa*a2
         dmu_MeV4= 2.47*(self.gap/10)**2/(400.)**2 *(1.e39*(hbar*c)**3/MeV**3) #MeV fm^{-3} to MeV^4
         return dmu_MeV4/dp_MeV4
     
